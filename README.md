@@ -1,1 +1,2 @@
-# workspace_ns
+# charles workspace dir
+used work depend tools
