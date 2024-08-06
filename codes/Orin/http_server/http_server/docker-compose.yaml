@@ -1,0 +1,21 @@
+version: '1.1'
+
+services:
+  http_server4screenshot_v1.1:
+    image: harbor.nanshe-arch.com/aipcimages/arm64v8/http_server4screenshot:v1.1
+    container_name: http_server4screenshot_v1.1
+    network_mode: host
+    user: admin
+    environment:
+      - DOWNLOAD_SERVER_IP=192.168.29.59
+      - MODEL_API_HOST=192.168.29.83
+    volumes:
+      - ~/picture:/home/admin/data/upload
+    restart: always
+
+# Optionally, if you want to define networks explicitly, you can do so like this:
+# networks:
+#   host_network:
+#     driver: bridge
+#     external: true
+#     name: host

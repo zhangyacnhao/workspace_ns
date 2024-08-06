@@ -1,0 +1,7 @@
+Package: upload-file-server
+Version: 1.0.2
+Section: base
+Priority: optional
+Architecture: arm64
+Maintainer: ZhangYanchao <zhangyanchao@nanshe-arch.com>
+Description:  update jar ball from xiaoxu

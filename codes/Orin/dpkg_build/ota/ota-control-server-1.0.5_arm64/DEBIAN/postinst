@@ -1,0 +1,11 @@
+#!/bin/bash
+
+
+
+systemctl daemon-reload
+systemctl enable ota-control.service
+
+systemctl start  ota-control.service
+systemctl restart  ota-control.service
+
+exit 0

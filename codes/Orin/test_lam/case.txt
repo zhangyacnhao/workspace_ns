@@ -1,0 +1,1 @@
+打开玄关吊灯;{'device':'吊灯','action':'打开','position':'玄关'}

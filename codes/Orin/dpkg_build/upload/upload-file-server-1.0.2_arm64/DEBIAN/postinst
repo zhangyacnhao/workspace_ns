@@ -1,0 +1,11 @@
+#!/bin/bash
+
+
+
+systemctl daemon-reload
+systemctl enable upload-file.service
+
+systemctl start  upload-file.service
+systemctl restart  upload-file.service
+
+exit 0

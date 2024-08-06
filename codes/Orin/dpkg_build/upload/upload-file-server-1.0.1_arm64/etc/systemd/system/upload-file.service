@@ -1,0 +1,18 @@
+[Unit]
+Description=Upload File Server
+After=network.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStartPre=/bin/bash -c 'while [ ! -s /etc/lib/.ns/vars_host_value ]; do sleep 5; done'
+ExecStartPre=/bin/bash -c 'until nc -z -v -w30 iot-mqtts-cn-north-1.nanshe-tech.com 31549; do sleep 5; done'
+ExecStart=/usr/local/jdk-21.0.3/bin/java -jar /home/aipc/upload-file-server.jar
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=upload-file-server
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+

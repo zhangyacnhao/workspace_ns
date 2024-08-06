@@ -1,0 +1,14 @@
+[Unit]  
+Description=heartbeat orin cli python Script Service  
+After=network.target  
+  
+[Service]  
+Type=simple  
+User=root  
+Group=root
+WorkingDirectory=/opt/scripts/twins_gpio/ 
+EnvironmentFile=/etc/environment.d/osip
+ExecStart=/usr/bin/python3 /opt/scripts/twins_gpio/hb_client.py 
+Restart=on-failure  
+[Install]  
+WantedBy=multi-user.target

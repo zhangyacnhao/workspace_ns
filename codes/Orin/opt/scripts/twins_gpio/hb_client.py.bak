@@ -1,0 +1,107 @@
+#!/opt/custom/bin/python3
+import requests
+import json
+import time
+import os
+import ctypes
+import sys
+
+
+
+
+
+win_ip = os.environ.get('WINIP')  
+debian_ip = os.environ.get('DEBIP')  
+# 检查环境变量是否存在且不为空  
+if not win_ip or not debian_ip:  
+    raise ValueError("环境变量 os IP 未设置或为空")  
+exit(1)
+
+
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+SO_PATH = os.path.join(BASE_DIR, './', './demo_so/libsdk.so')
+
+# Load the shared library
+
+lib = ctypes.CDLL(SO_PATH)
+lib.AIsend.argtypes = [ctypes.c_int]
+lib.AIsend.restype = ctypes.c_int
+lib.AIrev.argtypes = [ctypes.c_int]
+lib.AIrev.restype = ctypes.c_int
+lib.get_version_number.argtypes = []
+lib.get_version_number.restype = ctypes.c_char_p
+lib.get_gpioValue.argtypes = []
+lib.get_gpioValue.restype = ctypes.c_int
+
+def process_user_input(cmd):
+    if cmd == 0:
+        print("Exiting...")
+        return
+
+    elif cmd == 1:
+        version = lib.get_version_number().decode() 
+        print("***** get version ******")
+        print(version)
+
+    elif cmd in [2, 3, 4]:
+        ret = lib.AIsend(cmd)
+
+    elif cmd == 5:
+        ret = lib.AIrev(1)
+
+    elif cmd == 6:
+        gpio_value = lib.get_gpioValue()
+        if gpio_value == 1:
+            lib.AIrev(1)
+        else:
+            pass
+            # Handle other GPIO values if necessary
+
+    else:
+        print("Invalid input. Please enter a number between 0 and 6.")
+
+
+HEARTBEAT_URL_win = "http://" + win_ip + ":8088/api/heartbeat"
+HEARTBEAT_URL_deb = "http://" + debian_ip + ":8088/api/heartbeat"
+#REBOOT_d2dURL = "http://192.168.29.128:8088/api/reboot/debian2debian?password=1"
+REBOOT_d2wURL = "http://" + debian_ip +":8088/api/reboot/debian2win?password=1"
+
+reboot_flag = False
+while True:
+    try:
+        response = requests.get(HEARTBEAT_URL_win, timeout=5)
+        response.raise_for_status()  # 如果状态不是200，将会抛出HTTPError异常
+
+        # 解析JSON响应
+        json_response = json.loads(response.text)
+        errcode = json_response.get('errcode')
+        print (json_response)
+        if errcode != 0:
+            print("心跳返回非预期结果，正在尝试重启...")
+            process_user_input(4) # 通过gpio硬重启
+            time.sleep(60)
+            #response = requests.get(HEARTBEAT_URL_deb, timeout=5)
+            #json_response = json.loads(response.text)
+            #errcode = json_response.get('errcode')
+            #if errcode == 0:
+            requests.get(REBOOT_d2wURL) # 通过接口软重启从debian到win
+            time.sleep(90)
+        time.sleep(5)
+        continue
+
+    except requests.exceptions.RequestException as e:
+        print("请求心跳失败，正在尝试重启...")
+        process_user_input(4) # 通过gpio硬重启
+        time.sleep(60)
+        #response = requests.get(HEARTBEAT_URL_deb, timeout=5)
+        #json_response = json.loads(response.text)
+        #errcode = json_response.get('errcode')
+        #if errcode == 0:
+        requests.get(REBOOT_d2wURL) # 通过接口软重启从debian到win
+        time.sleep(90)
+        continue
+
+    # 请求成功且返回errcode为0，则等待2秒
+    time.sleep(5)
+

@@ -1,0 +1,26 @@
+[2024/07/09 22:37:50] ppocr WARNING: Since the angle classifier is not initialized, it will not be used during the forward process
+INFO:     Started server process [3580791]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+[2024/07/09 22:48:46] ppocr WARNING: Since the angle classifier is not initialized, it will not be used during the forward process
+INFO:     127.0.0.1:53286 - "POST /predict_ocr HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53288 - "POST /bool_advertising HTTP/1.1" 404 Not Found
+[2024/07/09 22:48:46] ppocr WARNING: Since the angle classifier is not initialized, it will not be used during the forward process
+INFO:     127.0.0.1:53290 - "POST /get_aiqiyi_processbar_curtime HTTP/1.1" 200 OK
+[2024/07/09 22:48:46] ppocr WARNING: Since the angle classifier is not initialized, it will not be used during the forward process
+INFO:     127.0.0.1:53292 - "POST /get_aiqiyi_current_episode HTTP/1.1" 200 OK
+[2024/07/09 22:52:03] ppocr WARNING: Since the angle classifier is not initialized, it will not be used during the forward process
+INFO:     127.0.0.1:53296 - "POST /predict_ocr HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53298 - "POST /bool_advertising HTTP/1.1" 404 Not Found
+[2024/07/09 22:52:05] ppocr WARNING: Since the angle classifier is not initialized, it will not be used during the forward process
+INFO:     127.0.0.1:53300 - "POST /get_aiqiyi_processbar_curtime HTTP/1.1" 200 OK
+[2024/07/09 22:52:05] ppocr WARNING: Since the angle classifier is not initialized, it will not be used during the forward process
+INFO:     127.0.0.1:53302 - "POST /get_aiqiyi_current_episode HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53306 - "POST /predict_ocr HTTP/1.1" 422 Unprocessable Entity
+[2024/07/09 22:58:16] ppocr WARNING: Since the angle classifier is not initialized, it will not be used during the forward process
+INFO:     127.0.0.1:53310 - "POST /predict_ocr HTTP/1.1" 200 OK
+[2024/07/09 23:00:19] ppocr WARNING: Since the angle classifier is not initialized, it will not be used during the forward process
+INFO:     127.0.0.1:53312 - "POST /predict_ocr HTTP/1.1" 200 OK
+[2024/07/09 23:00:30] ppocr WARNING: Since the angle classifier is not initialized, it will not be used during the forward process
+INFO:     127.0.0.1:53314 - "POST /predict_ocr HTTP/1.1" 200 OK

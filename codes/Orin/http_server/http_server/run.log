@@ -1,0 +1,14 @@
+[2024-07-18 09:23:27 +0800] [1876677] [INFO] Starting gunicorn 20.0.4
+[2024-07-18 09:23:27 +0800] [1876677] [INFO] Listening at: http://0.0.0.0:11435 (1876677)
+[2024-07-18 09:23:27 +0800] [1876677] [INFO] Using worker: sync
+[2024-07-18 09:23:27 +0800] [1876679] [INFO] Booting worker with pid: 1876679
+Deleted old file: /home/admin/data/upload/12345/20240715150428.jpeg
+Deleted old file: /home/admin/data/upload/12345/20240715150644.jpeg
+2024-07-18 09:24:15
+Download URL: http://192.168.20.2:11435/download/12345/20240718092415.jpeg
+http://192.168.29.83:18083/push
+{'code': 0, 'message': 'Get URL:http://192.168.20.2:11435/download/12345/20240718092415.jpeg'}
+127.0.0.1 - - [18/Jul/2024:09:24:15 +0800] "POST /upload HTTP/1.1" 200 41 "-" "python-requests/2.31.0"
+[2024-07-18 13:31:17 +0800] [1876677] [INFO] Handling signal: hup
+[2024-07-18 13:31:17 +0800] [1876677] [INFO] Hang up: Master
+[2024-07-18 13:31:17 +0800] [1960388] [INFO] Booting worker with pid: 1960388

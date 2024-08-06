@@ -1,0 +1,110 @@
+import importlib
+import subprocess
+import sys
+import hashlib
+from flask import Flask, request, jsonify, send_from_directory
+import os
+from werkzeug.utils import secure_filename
+from datetime import datetime
+import time
+import requests
+import json
+
+
+def install(package):
+    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+try:
+    import flask
+except ImportError:
+    print("Flask is not installed. Installing...")
+    install('Flask')
+    print("Flask has been installed. Reloading script.")
+    # Reload the script after installing Flask
+    python = sys.executable
+    sys.exit(subprocess.call([python] + sys.argv))
+
+# Define your upload folder here
+UPLOAD_FOLDER = os.path.expanduser('~/data/upload/')
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+# Limit the types of files that can be uploaded (for security reasons)
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+app = Flask(__name__)
+upload_status = {}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def calculate_md5(file_path):
+    hash_md5 = hashlib.md5()
+    with open(file_path, "rb") as f:
+        for chunk in iter(lambda: f.read(4096), b""):
+            hash_md5.update(chunk)
+    return hash_md5.hexdigest()
+
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    device_id = request.form.get('device_id')
+    image = request.files.get('image')
+    client_md5 = request.form.get('md5')
+
+    if not device_id or not image or not client_md5:
+        return jsonify({'error': 'Device ID, image, and MD5 are required'}), 400
+
+    if not allowed_file(image.filename):
+        return jsonify({'error': 'Invalid file type'}), 400
+
+    device_folder = os.path.join(UPLOAD_FOLDER, device_id)
+    if not os.path.exists(device_folder):
+        os.makedirs(device_folder)
+
+    # Generate timestamp and file name at the beginning of the request
+    timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+    _, ext = os.path.splitext(secure_filename(image.filename))
+    filename = f"{timestamp}{ext}"
+    file_path = os.path.join(device_folder, filename)
+    print (time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
+
+    # Generate the URL for external service
+    download_url = f"http://192.168.20.2:11435/download/{device_id}/{filename}"
+
+    # Print the URL for external service
+    print(f"Download URL: {download_url}")
+
+    #Bring Download url of file  to request model  api when sever get post request
+    info={'text': '##IMG_PATH##' + download_url}
+    res=requests.post('http://192.168.29.83:18083/push',json=json.dumps(info))
+    print(json.loads(res.content))
+
+
+    # Set the upload start flag
+    upload_status[device_id] = 'uploading'
+
+    # Save the image
+    image.save(file_path)
+
+    # Calculate the MD5 checksum of the uploaded file
+    server_md5 = calculate_md5(file_path)
+
+    if client_md5 != server_md5:
+        upload_status[device_id] = 'failed'
+        os.remove(file_path)
+        return jsonify({'error': 'MD5 checksum does not match'}), 400
+
+    # Update the flag to indicate the upload is complete and successful
+    upload_status[device_id] = 'completed'
+    # Here you could add a notification to other applications
+
+    return jsonify({'message': 'File uploaded successfully'}), 200
+
+@app.route('/download/<device_id>/<filename>', methods=['GET'])
+def download_file(device_id, filename):
+    device_folder = os.path.join(UPLOAD_FOLDER, device_id)
+    return send_from_directory(device_folder, filename)
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=11435)
+

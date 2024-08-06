@@ -1,0 +1,13 @@
+[Unit]  
+Description=Get PowerKey  Service  
+After=network.target  
+  
+[Service]  
+Type=simple  
+ExecStart=/opt/scripts/twins_gpio/gpio_key/detPowerKeyv2
+Restart=on-failure  
+User=root 
+Group=root
+EnvironmentFile=/etc/environment.d/osip
+[Install]  
+WantedBy=multi-user.target

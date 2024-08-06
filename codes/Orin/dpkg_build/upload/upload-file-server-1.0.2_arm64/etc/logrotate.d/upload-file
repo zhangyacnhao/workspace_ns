@@ -1,0 +1,13 @@
+/home/aipc/logs/upload-file-server/upload-file-server.log {
+    daily                 
+    size 10M              
+    rotate 3              
+    compress              
+    delaycompress         
+    missingok             
+    notifempty            
+    create 0644  admin admin
+    postrotate
+        /usr/lib/rsyslog/rsyslog-rotate     
+    endscript
+}
