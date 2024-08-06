@@ -1,0 +1,15 @@
+[Unit]  
+Description=Heartbeat Service  
+After=network.target  
+  
+[Service]  
+StandardOutput=syslog
+StandardError=syslog
+ExecStart=/opt/custom/bin/python3 /opt/scripts/heartbeat/application.py
+Restart=always  
+User=root
+Group=root 
+WorkingDirectory=/opt/scripts/heartbeat  
+  
+[Install]  
+WantedBy=multi-user.target
